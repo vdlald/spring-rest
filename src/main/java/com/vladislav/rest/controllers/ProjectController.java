@@ -18,22 +18,22 @@ public class ProjectController {
     private final ProjectService service;
 
     @GetMapping("/projects")
-    public List<Project> getAll(@RequestBody PageRequestBody pageBody) {
+    public List<Project> getAllProjects(@RequestBody PageRequestBody pageBody) {
         return service.getAll();
     }
 
     @GetMapping("/projects/{id}")
-    public Project getOne(@PathVariable Long id) {
+    public Project getProjectById(@PathVariable Long id) {
         return service.getById(id);
     }
 
     @PostMapping("/projects")
-    public Project createEmployee(@RequestBody Project Employee) {
+    public Project createProject(@RequestBody Project Employee) {
         return service.save(Employee);
     }
 
     @PutMapping("/projects/{id}")
-    public Project putEmployee(@RequestBody Project incomingDto, @PathVariable Long id) {
+    public Project putProject(@RequestBody Project incomingDto, @PathVariable Long id) {
         try {
             final Project Employee = service.getById(id);
             BeanUtils.copyPropertiesExcludeNullProperties(incomingDto, Employee);
@@ -44,12 +44,12 @@ public class ProjectController {
     }
 
     @DeleteMapping("/projects/{id}")
-    public void deleteEmployee(@PathVariable Long id) {
+    public void deleteProject(@PathVariable Long id) {
         service.delete(id);
     }
 
     @GetMapping("/projects/{id}/tasks")
-    public List<Task> getEmployeeTasks(@PathVariable Long id) {
-        return service.getAllProjectTasks(id);
+    public List<Task> getProjectTasks(@PathVariable Long id) {
+        return service.getProjectTasks(id);
     }
 }

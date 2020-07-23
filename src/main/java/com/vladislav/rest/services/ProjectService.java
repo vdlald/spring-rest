@@ -15,5 +15,5 @@ public interface ProjectService {
 
     void delete(Long projectId);
 
-    List<Task> getAllProjectTasks(Long projectId);
+    List<Task> getProjectTasks(Long projectId);
 }

@@ -20,5 +20,5 @@ public interface TaskService {
 
     void delete(UUID taskUUID);
 
-    List<Employee> getAllTaskEmployees(UUID taskUUID);
+    List<Employee> getTaskEmployees(UUID taskUUID);
 }

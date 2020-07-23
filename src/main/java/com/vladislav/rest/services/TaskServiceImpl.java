@@ -45,7 +45,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<Employee> getAllTaskEmployees(UUID taskUUID) {
+    public List<Employee> getTaskEmployees(UUID taskUUID) {
         final Task task = getByUUID(taskUUID);
         return task.getEmployees();
     }

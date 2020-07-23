@@ -52,7 +52,7 @@ public class TaskController {
 
     @GetMapping("/tasks/{uuid}/employees")
     public List<Employee> getTaskEmployees(@PathVariable UUID uuid) {
-        return service.getAllTaskEmployees(uuid);
+        return service.getTaskEmployees(uuid);
     }
 
 }

@@ -49,6 +49,6 @@ public class EmployeeController {
 
     @GetMapping("/employees/{id}/tasks")
     public List<Task> getEmployeeTasks(@PathVariable Long id) {
-        return service.getAllEmployeeTasks(id);
+        return service.getEmployeeTasks(id);
     }
 }

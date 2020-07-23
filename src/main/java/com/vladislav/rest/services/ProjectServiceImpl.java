@@ -37,7 +37,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public List<Task> getAllProjectTasks(Long projectId) {
+    public List<Task> getProjectTasks(Long projectId) {
         final Project project = getById(projectId);
         return project.getTasks();
     }

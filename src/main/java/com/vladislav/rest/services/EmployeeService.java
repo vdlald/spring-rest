@@ -14,5 +14,5 @@ public interface EmployeeService {
 
     void delete(Long id);
 
-    List<Task> getAllEmployeeTasks(Long id);
+    List<Task> getEmployeeTasks(Long id);
 }

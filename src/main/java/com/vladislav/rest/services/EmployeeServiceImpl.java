@@ -37,7 +37,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public List<Task> getAllEmployeeTasks(Long employeeId) {
+    public List<Task> getEmployeeTasks(Long employeeId) {
         final Employee employee = getById(employeeId);
         return employee.getTasks();
     }
