@@ -1,6 +1,6 @@
 package com.vladislav.rest.controllers;
 
-import com.vladislav.rest.controllers.requests.PageBody;
+import com.vladislav.rest.controllers.requests.PageRequestBody;
 import com.vladislav.rest.exceptions.ResourceNotFoundException;
 import com.vladislav.rest.models.Employee;
 import com.vladislav.rest.models.Task;
@@ -20,8 +20,7 @@ public class EmployeeController {
     private final EmployeeService service;
 
     @GetMapping("/employees")
-    public Page<Employee> getAll(@RequestBody PageBody pageBody) {
-        final PageRequest pageRequest = PageRequest.of(pageBody.getPage(), pageBody.getPageSize());
+    public Page<Employee> getAll(@RequestBody PageRequestBody pageRequest) {
         return service.findAllEmployees(pageRequest);
     }
 

@@ -1,6 +1,6 @@
 package com.vladislav.rest.controllers;
 
-import com.vladislav.rest.controllers.requests.PageBody;
+import com.vladislav.rest.controllers.requests.PageRequestBody;
 import com.vladislav.rest.exceptions.ResourceNotFoundException;
 import com.vladislav.rest.models.Project;
 import com.vladislav.rest.models.Task;
@@ -8,7 +8,6 @@ import com.vladislav.rest.services.ProjectService;
 import com.vladislav.rest.utils.BeanUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,9 +19,8 @@ public class ProjectController {
     private final ProjectService service;
 
     @GetMapping("/projects")
-    public Page<Project> getAll(@RequestBody PageBody pageBody) {
-        final PageRequest pageRequest = PageRequest.of(pageBody.getPage(), pageBody.getPageSize());
-        return service.findAllEmployees(pageRequest);
+    public Page<Project> getAll(@RequestBody PageRequestBody pageBody) {
+        return service.findAllEmployees(pageBody);
     }
 
     @GetMapping("/projects/{id}")
