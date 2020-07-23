@@ -1,14 +1,11 @@
 package com.vladislav.rest.controllers;
 
-import com.vladislav.rest.controllers.requests.PageRequestBody;
 import com.vladislav.rest.exceptions.ResourceNotFoundException;
 import com.vladislav.rest.models.Employee;
 import com.vladislav.rest.models.Task;
 import com.vladislav.rest.services.EmployeeService;
 import com.vladislav.rest.utils.BeanUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,34 +17,34 @@ public class EmployeeController {
     private final EmployeeService service;
 
     @GetMapping("/employees")
-    public Page<Employee> getAll(@RequestBody PageRequestBody pageRequest) {
-        return service.findAllEmployees(pageRequest);
+    public List<Employee> getAll() {
+        return service.getAll();
     }
 
     @GetMapping("/employees/{id}")
     public Employee getOne(@PathVariable Long id) {
-        return service.findEmployeeById(id);
+        return service.getById(id);
     }
 
     @PostMapping("/employees")
     public Employee createEmployee(@RequestBody Employee Employee) {
-        return service.saveEmployee(Employee);
+        return service.save(Employee);
     }
 
     @PutMapping("/employees/{id}")
     public Employee putEmployee(@RequestBody Employee incomingDto, @PathVariable Long id) {
         try {
-            final Employee Employee = service.findEmployeeById(id);
+            final Employee Employee = service.getById(id);
             BeanUtils.copyPropertiesExcludeNullProperties(incomingDto, Employee);
-            return service.saveEmployee(Employee);
+            return service.save(Employee);
         } catch (ResourceNotFoundException ignore) {
-            return service.saveEmployee(incomingDto);
+            return service.save(incomingDto);
         }
     }
 
     @DeleteMapping("/employees/{id}")
     public void deleteEmployee(@PathVariable Long id) {
-        service.deleteEmployee(id);
+        service.delete(id);
     }
 
     @GetMapping("/employees/{id}/tasks")

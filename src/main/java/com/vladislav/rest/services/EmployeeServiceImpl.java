@@ -5,8 +5,6 @@ import com.vladislav.rest.models.Employee;
 import com.vladislav.rest.models.Task;
 import com.vladislav.rest.repositories.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,29 +16,29 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final EmployeeRepository repository;
 
     @Override
-    public Page<Employee> findAllEmployees(PageRequest pageRequest) {
-        return repository.findAll(pageRequest);
+    public List<Employee> getAll() {
+        return repository.findAll();
     }
 
     @Override
-    public Employee findEmployeeById(Long employeeId) {
+    public Employee getById(Long employeeId) {
         return repository.findById(employeeId)
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find Employee with id: " + employeeId));
     }
 
     @Override
-    public Employee saveEmployee(Employee employee) {
+    public Employee save(Employee employee) {
         return repository.save(employee);
     }
 
     @Override
-    public void deleteEmployee(Long employeeId) {
+    public void delete(Long employeeId) {
         repository.deleteById(employeeId);
     }
 
     @Override
     public List<Task> getAllEmployeeTasks(Long employeeId) {
-        final Employee employee = findEmployeeById(employeeId);
+        final Employee employee = getById(employeeId);
         return employee.getTasks();
     }
 }
