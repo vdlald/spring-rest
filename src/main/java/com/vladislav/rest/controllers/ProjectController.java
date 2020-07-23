@@ -7,7 +7,6 @@ import com.vladislav.rest.models.Task;
 import com.vladislav.rest.services.ProjectService;
 import com.vladislav.rest.utils.BeanUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,34 +18,34 @@ public class ProjectController {
     private final ProjectService service;
 
     @GetMapping("/projects")
-    public Page<Project> getAll(@RequestBody PageRequestBody pageBody) {
-        return service.findAllEmployees(pageBody);
+    public List<Project> getAll(@RequestBody PageRequestBody pageBody) {
+        return service.getAll();
     }
 
     @GetMapping("/projects/{id}")
     public Project getOne(@PathVariable Long id) {
-        return service.findProjectById(id);
+        return service.getById(id);
     }
 
     @PostMapping("/projects")
     public Project createEmployee(@RequestBody Project Employee) {
-        return service.saveProject(Employee);
+        return service.save(Employee);
     }
 
     @PutMapping("/projects/{id}")
     public Project putEmployee(@RequestBody Project incomingDto, @PathVariable Long id) {
         try {
-            final Project Employee = service.findProjectById(id);
+            final Project Employee = service.getById(id);
             BeanUtils.copyPropertiesExcludeNullProperties(incomingDto, Employee);
-            return service.saveProject(Employee);
+            return service.save(Employee);
         } catch (ResourceNotFoundException ignore) {
-            return service.saveProject(incomingDto);
+            return service.save(incomingDto);
         }
     }
 
     @DeleteMapping("/projects/{id}")
     public void deleteEmployee(@PathVariable Long id) {
-        service.deleteProject(id);
+        service.delete(id);
     }
 
     @GetMapping("/projects/{id}/tasks")

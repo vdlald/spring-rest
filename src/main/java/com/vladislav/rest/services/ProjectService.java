@@ -2,20 +2,18 @@ package com.vladislav.rest.services;
 
 import com.vladislav.rest.models.Project;
 import com.vladislav.rest.models.Task;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 
 public interface ProjectService {
 
-    Page<Project> findAllEmployees(PageRequest pageRequest);
+    List<Project> getAll();
 
-    Project findProjectById(Long projectId);
+    Project getById(Long projectId);
 
-    Project saveProject(Project project);
+    Project save(Project project);
 
-    void deleteProject(Long projectId);
+    void delete(Long projectId);
 
     List<Task> getAllProjectTasks(Long projectId);
 }
