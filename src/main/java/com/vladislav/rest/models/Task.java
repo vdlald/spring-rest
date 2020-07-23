@@ -33,6 +33,8 @@ public class Task {
 
     private String description = "";
 
+    private Boolean active = true;
+
     @ManyToMany
     @JoinTable(name = "employee_tasks",
             joinColumns = @JoinColumn(name = "task_uuid"),
