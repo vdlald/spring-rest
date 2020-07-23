@@ -20,38 +20,38 @@ public class TaskController {
     private final TaskService service;
 
     @GetMapping("/tasks")
-    public Page<Task> getAll(@RequestBody PageRequestBody pageBody) {
-        return service.findAllTasks(pageBody);
+    public Page<Task> pageTasks(@RequestBody PageRequestBody pageBody) {
+        return service.pageTasks(pageBody);
     }
 
     @GetMapping("/tasks/{uuid}")
-    public Task getOne(@PathVariable UUID uuid) {
-        return service.findTaskById(uuid);
+    public Task getTaskByUUID(@PathVariable UUID uuid) {
+        return service.getByUUID(uuid);
     }
 
     @PostMapping("/tasks")
-    public Task createEmployee(@RequestBody Task Employee) {
-        return service.saveTask(Employee);
+    public Task createTask(@RequestBody Task Employee) {
+        return service.save(Employee);
     }
 
     @PutMapping("/tasks/{uuid}")
-    public Task putEmployee(@RequestBody Task incomingTask, @PathVariable UUID uuid) {
+    public Task putTask(@RequestBody Task incomingTask, @PathVariable UUID uuid) {
         try {
-            final Task task = service.findTaskById(uuid);
+            final Task task = service.getByUUID(uuid);
             BeanUtils.copyPropertiesExcludeNullProperties(incomingTask, task);
-            return service.saveTask(task);
+            return service.save(task);
         } catch (ResourceNotFoundException ignore) {
-            return service.saveTask(incomingTask);
+            return service.save(incomingTask);
         }
     }
 
     @DeleteMapping("/tasks/{uuid}")
-    public void deleteEmployee(@PathVariable UUID uuid) {
-        service.deleteTask(uuid);
+    public void deleteTask(@PathVariable UUID uuid) {
+        service.delete(uuid);
     }
 
     @GetMapping("/tasks/{uuid}/employees")
-    public List<Employee> getEmployeeTasks(@PathVariable UUID uuid) {
+    public List<Employee> getTaskEmployees(@PathVariable UUID uuid) {
         return service.getAllTaskEmployees(uuid);
     }
 

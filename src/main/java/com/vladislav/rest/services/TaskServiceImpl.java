@@ -19,29 +19,34 @@ public class TaskServiceImpl implements TaskService {
     private final TaskRepository repository;
 
     @Override
-    public Page<Task> findAllTasks(PageRequest pageRequest) {
+    public List<Task> getAll() {
+        return repository.findAll();
+    }
+
+    @Override
+    public Page<Task> pageTasks(PageRequest pageRequest) {
         return repository.findAll(pageRequest);
     }
 
     @Override
-    public Task findTaskById(UUID taskUUID) {
+    public Task getByUUID(UUID taskUUID) {
         return repository.findById(taskUUID)
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find Employee with UUID: " + taskUUID));
     }
 
     @Override
-    public Task saveTask(Task task) {
+    public Task save(Task task) {
         return repository.save(task);
     }
 
     @Override
-    public void deleteTask(UUID taskUUID) {
+    public void delete(UUID taskUUID) {
         repository.deleteById(taskUUID);
     }
 
     @Override
     public List<Employee> getAllTaskEmployees(UUID taskUUID) {
-        final Task task = findTaskById(taskUUID);
+        final Task task = getByUUID(taskUUID);
         return task.getEmployees();
     }
 

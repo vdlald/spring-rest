@@ -9,13 +9,16 @@ import java.util.List;
 import java.util.UUID;
 
 public interface TaskService {
-    Page<Task> findAllTasks(PageRequest pageRequest);
 
-    Task findTaskById(UUID taskUUID);
+    List<Task> getAll();
 
-    Task saveTask(Task task);
+    Page<Task> pageTasks(PageRequest pageRequest);
 
-    void deleteTask(UUID taskUUID);
+    Task getByUUID(UUID taskUUID);
+
+    Task save(Task task);
+
+    void delete(UUID taskUUID);
 
     List<Employee> getAllTaskEmployees(UUID taskUUID);
 }
