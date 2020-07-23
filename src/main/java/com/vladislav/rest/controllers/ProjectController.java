@@ -1,6 +1,5 @@
 package com.vladislav.rest.controllers;
 
-import com.vladislav.rest.controllers.requests.PageRequestBody;
 import com.vladislav.rest.exceptions.ResourceNotFoundException;
 import com.vladislav.rest.models.Project;
 import com.vladislav.rest.models.Task;
@@ -18,7 +17,7 @@ public class ProjectController {
     private final ProjectService service;
 
     @GetMapping("/projects")
-    public List<Project> getAllProjects(@RequestBody PageRequestBody pageBody) {
+    public List<Project> getAllProjects() {
         return service.getAll();
     }
 
