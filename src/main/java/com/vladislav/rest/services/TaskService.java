@@ -14,7 +14,7 @@ public interface TaskService {
 
     Page<Task> pageTasks(PageRequest pageRequest);
 
-    Task getByUUID(UUID taskUUID);
+    Task getById(UUID taskUUID);
 
     Task save(Task task);
 

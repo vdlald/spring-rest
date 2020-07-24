@@ -26,7 +26,7 @@ public class TaskController {
 
     @GetMapping("/tasks/{uuid}")
     public Task getTaskByUUID(@PathVariable UUID uuid) {
-        return service.getByUUID(uuid);
+        return service.getById(uuid);
     }
 
     @PostMapping("/tasks")
@@ -37,7 +37,7 @@ public class TaskController {
     @PutMapping("/tasks/{uuid}")
     public Task putTask(@RequestBody Task incomingTask, @PathVariable UUID uuid) {
         try {
-            final Task task = service.getByUUID(uuid);
+            final Task task = service.getById(uuid);
             BeanUtils.copyPropertiesExcludeNullProperties(incomingTask, task);
             return service.save(task);
         } catch (ResourceNotFoundException ignore) {
