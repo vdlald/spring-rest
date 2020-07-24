@@ -5,6 +5,7 @@ import com.vladislav.rest.models.Task;
 import com.vladislav.rest.repositories.TaskRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,6 +36,13 @@ public class TaskServiceImpl extends AbstractResourceService<Task, UUID> impleme
     @Override
     public List<Task> getAllByCompleted(boolean completed) {
         return repository.findAllByCompleted(completed);
+    }
+
+    @Override
+    public void completeTask(UUID taskId) {
+        final Task task = getById(taskId);
+        task.setCompleted(true);
+        save(task);
     }
 
 }

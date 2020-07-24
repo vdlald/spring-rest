@@ -23,4 +23,6 @@ public interface TaskService {
     List<Employee> getTaskEmployees(UUID taskUUID);
 
     List<Task> getAllByCompleted(boolean completed);
+
+    void completeTask(UUID taskId);
 }

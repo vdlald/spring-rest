@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -71,5 +72,11 @@ public class TaskController {
     @GetMapping("/tasks/{uuid}/employees")
     public List<Employee> getTaskEmployees(@PathVariable UUID uuid) {
         return service.getTaskEmployees(uuid);
+    }
+
+    @GetMapping("/tasks/{uuid}/complete")
+    public ResponseEntity<Void> completeTask(@PathVariable UUID uuid) {
+        service.completeTask(uuid);
+        return ResponseEntity.noContent().build();
     }
 }
