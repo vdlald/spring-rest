@@ -33,7 +33,7 @@ public class Task {
 
     private String description = "";
 
-    private Boolean active = true;
+    private Boolean completed = true;
 
     @ManyToMany
     @JoinTable(name = "employee_tasks",

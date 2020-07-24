@@ -21,4 +21,6 @@ public interface TaskService {
     void delete(UUID taskUUID);
 
     List<Employee> getTaskEmployees(UUID taskUUID);
+
+    List<Task> getAllByCompleted(boolean completed);
 }

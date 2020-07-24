@@ -1,6 +1,6 @@
 package com.vladislav.rest.controllers;
 
-import com.vladislav.rest.controllers.requests.PageRequestBody;
+import com.vladislav.rest.controllers.responses.PageDto;
 import com.vladislav.rest.exceptions.ResourceNotFoundException;
 import com.vladislav.rest.models.Employee;
 import com.vladislav.rest.models.Task;
@@ -8,6 +8,9 @@ import com.vladislav.rest.services.TaskService;
 import com.vladislav.rest.utils.BeanUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,33 +22,44 @@ import java.util.UUID;
 public class TaskController {
 
     private final TaskService service;
+    private final RepresentationModelAssembler<Task, EntityModel<Task>> taskAssembler;
+    private final RepresentationModelAssembler<Page<Task>, EntityModel<PageDto<EntityModel<Task>>>> pageTaskAssembler;
 
     @GetMapping("/tasks")
-    public Page<Task> pageTasks(@RequestBody PageRequestBody pageBody) {
-        return service.pageTasks(pageBody);
+    public EntityModel<PageDto<EntityModel<Task>>> pageTasks(
+            @RequestParam(value = "page") Integer page,
+            @RequestParam(value = "size") Integer size
+    ) {
+        final PageRequest pageRequest = PageRequest.of(page, size);
+        final Page<Task> tasks = service.pageTasks(pageRequest);
+        return pageTaskAssembler.toModel(tasks);
     }
 
     @GetMapping("/tasks/{uuid}")
-    public Task getTaskByUUID(@PathVariable UUID uuid) {
-        return service.getById(uuid);
+    public EntityModel<Task> getTaskByUUID(@PathVariable UUID uuid) {
+        final Task task = service.getById(uuid);
+        return taskAssembler.toModel(task);
     }
 
     @PostMapping("/tasks")
     @ResponseStatus(HttpStatus.CREATED)
-    public Task createTask(@RequestBody Task employee) {
-        return service.save(employee);
+    public EntityModel<Task> createTask(@RequestBody Task incomingTask) {
+        final Task task = service.save(incomingTask);
+        return taskAssembler.toModel(task);
     }
 
     @PutMapping("/tasks/{uuid}")
     @ResponseStatus(HttpStatus.OK)
-    public Task putTask(@RequestBody Task incomingTask, @PathVariable UUID uuid) {
+    public EntityModel<Task> putTask(@RequestBody Task incomingTask, @PathVariable UUID uuid) {
+        Task save;
         try {
             final Task task = service.getById(uuid);
             BeanUtils.copyPropertiesExcludeNullProperties(incomingTask, task);
-            return service.save(task);
+            save = service.save(task);
         } catch (ResourceNotFoundException ignore) {
-            return service.save(incomingTask);
+            save = service.save(incomingTask);
         }
+        return taskAssembler.toModel(save);
     }
 
     @DeleteMapping("/tasks/{uuid}")

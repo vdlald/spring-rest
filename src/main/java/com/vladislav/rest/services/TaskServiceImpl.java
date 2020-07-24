@@ -32,4 +32,9 @@ public class TaskServiceImpl extends AbstractResourceService<Task, UUID> impleme
         return task.getEmployees();
     }
 
+    @Override
+    public List<Task> getAllByCompleted(boolean completed) {
+        return repository.findAllByCompleted(completed);
+    }
+
 }
