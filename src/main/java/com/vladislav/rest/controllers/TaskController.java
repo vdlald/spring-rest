@@ -30,8 +30,8 @@ public class TaskController {
     }
 
     @PostMapping("/tasks")
-    public Task createTask(@RequestBody Task Employee) {
-        return service.save(Employee);
+    public Task createTask(@RequestBody Task employee) {
+        return service.save(employee);
     }
 
     @PutMapping("/tasks/{uuid}")

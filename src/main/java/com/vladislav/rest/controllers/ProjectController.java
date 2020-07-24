@@ -27,16 +27,16 @@ public class ProjectController {
     }
 
     @PostMapping("/projects")
-    public Project createProject(@RequestBody Project Employee) {
-        return service.save(Employee);
+    public Project createProject(@RequestBody Project project) {
+        return service.save(project);
     }
 
     @PutMapping("/projects/{id}")
     public Project putProject(@RequestBody Project incomingDto, @PathVariable Long id) {
         try {
-            final Project Employee = service.getById(id);
-            BeanUtils.copyPropertiesExcludeNullProperties(incomingDto, Employee);
-            return service.save(Employee);
+            final Project project = service.getById(id);
+            BeanUtils.copyPropertiesExcludeNullProperties(incomingDto, project);
+            return service.save(project);
         } catch (ResourceNotFoundException ignore) {
             return service.save(incomingDto);
         }
