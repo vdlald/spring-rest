@@ -28,8 +28,8 @@ public class TaskController {
 
     @GetMapping("/tasks")
     public EntityModel<PageDto<EntityModel<Task>>> pageTasks(
-            @RequestParam(value = "page") Integer page,
-            @RequestParam(value = "size") Integer size
+            @RequestParam(value = "page", defaultValue = "0", required = false) Integer page,
+            @RequestParam(value = "size", defaultValue = "250", required = false) Integer size
     ) {
         final PageRequest pageRequest = PageRequest.of(page, size);
         final Page<Task> tasks = service.pageTasks(pageRequest);
