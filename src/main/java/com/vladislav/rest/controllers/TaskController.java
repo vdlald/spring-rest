@@ -8,6 +8,7 @@ import com.vladislav.rest.services.TaskService;
 import com.vladislav.rest.utils.BeanUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,11 +31,13 @@ public class TaskController {
     }
 
     @PostMapping("/tasks")
+    @ResponseStatus(HttpStatus.CREATED)
     public Task createTask(@RequestBody Task employee) {
         return service.save(employee);
     }
 
     @PutMapping("/tasks/{uuid}")
+    @ResponseStatus(HttpStatus.OK)
     public Task putTask(@RequestBody Task incomingTask, @PathVariable UUID uuid) {
         try {
             final Task task = service.getById(uuid);
@@ -46,6 +49,7 @@ public class TaskController {
     }
 
     @DeleteMapping("/tasks/{uuid}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteTask(@PathVariable UUID uuid) {
         service.delete(uuid);
     }
@@ -54,5 +58,4 @@ public class TaskController {
     public List<Employee> getTaskEmployees(@PathVariable UUID uuid) {
         return service.getTaskEmployees(uuid);
     }
-
 }

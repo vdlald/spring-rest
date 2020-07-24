@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
+import org.springframework.hateoas.server.RepresentationModelAssembler;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,29 +24,32 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class EmployeeController {
 
     private final EmployeeService service;
+    private final RepresentationModelAssembler<Employee, EntityModel<Employee>> modelAssembler;
 
     @GetMapping("/employees")
     public CollectionModel<EntityModel<Employee>> getAllEmployees() {
         final List<EntityModel<Employee>> employees = service.getAll().stream()
-                .map(EmployeeController::employeeEntityModel)
+                .map(modelAssembler::toModel)
                 .collect(Collectors.toUnmodifiableList());
-        final Link selfRel = linkTo(methodOnController().getAllEmployees()).withSelfRel();
+        final Link selfRel = linkTo(methodOn(EmployeeController.class).getAllEmployees()).withSelfRel();
         return CollectionModel.of(employees, selfRel);
     }
 
     @GetMapping("/employees/{id}")
     public EntityModel<Employee> getEmployeeById(@PathVariable Long id) {
         final Employee employee = service.getById(id);
-        return employeeEntityModel(employee);
+        return modelAssembler.toModel(employee);
     }
 
     @PostMapping("/employees")
+    @ResponseStatus(HttpStatus.CREATED)
     public EntityModel<Employee> createEmployee(@RequestBody Employee incomingEmployee) {
         final Employee employee = service.save(incomingEmployee);
-        return employeeEntityModel(employee);
+        return modelAssembler.toModel(employee);
     }
 
     @PutMapping("/employees/{id}")
+    @ResponseStatus(HttpStatus.OK)
     public EntityModel<Employee> putEmployee(@RequestBody Employee incomingDto, @PathVariable Long id) {
         Employee saved;
         try {
@@ -54,10 +59,11 @@ public class EmployeeController {
         } catch (ResourceNotFoundException ignore) {
             saved = service.save(incomingDto);
         }
-        return employeeEntityModel(saved);
+        return modelAssembler.toModel(saved);
     }
 
     @DeleteMapping("/employees/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteEmployee(@PathVariable Long id) {
         service.delete(id);
     }
@@ -65,16 +71,5 @@ public class EmployeeController {
     @GetMapping("/employees/{id}/tasks")
     public List<Task> getEmployeeTasks(@PathVariable Long id) {
         return service.getEmployeeTasks(id);
-    }
-
-    private static EntityModel<Employee> employeeEntityModel(Employee employee) {
-        final Link selfRel = linkTo(methodOnController().getEmployeeById(employee.getId())).withSelfRel();
-        final Link employees = linkTo(methodOnController().getAllEmployees()).withRel("employees");
-        final Link tasks = linkTo(methodOnController().getEmployeeTasks(employee.getId())).withRel("employeeTasks");
-        return EntityModel.of(employee, selfRel, employees, tasks);
-    }
-
-    private static EmployeeController methodOnController() {
-        return methodOn(EmployeeController.class);
     }
 }

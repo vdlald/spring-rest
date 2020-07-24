@@ -6,6 +6,7 @@ import com.vladislav.rest.models.Task;
 import com.vladislav.rest.services.ProjectService;
 import com.vladislav.rest.utils.BeanUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,11 +28,13 @@ public class ProjectController {
     }
 
     @PostMapping("/projects")
+    @ResponseStatus(HttpStatus.CREATED)
     public Project createProject(@RequestBody Project project) {
         return service.save(project);
     }
 
     @PutMapping("/projects/{id}")
+    @ResponseStatus(HttpStatus.OK)
     public Project putProject(@RequestBody Project incomingDto, @PathVariable Long id) {
         try {
             final Project project = service.getById(id);
@@ -43,6 +46,7 @@ public class ProjectController {
     }
 
     @DeleteMapping("/projects/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteProject(@PathVariable Long id) {
         service.delete(id);
     }
