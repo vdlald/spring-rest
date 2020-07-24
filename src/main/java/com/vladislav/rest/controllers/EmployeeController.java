@@ -17,12 +17,12 @@ public class EmployeeController {
     private final EmployeeService service;
 
     @GetMapping("/employees")
-    public List<Employee> getAll() {
+    public List<Employee> getAllEmployees() {
         return service.getAll();
     }
 
     @GetMapping("/employees/{id}")
-    public Employee getOne(@PathVariable Long id) {
+    public Employee getEmployeeById(@PathVariable Long id) {
         return service.getById(id);
     }
 
