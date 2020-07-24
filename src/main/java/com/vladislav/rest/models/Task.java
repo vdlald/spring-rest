@@ -35,6 +35,8 @@ public class Task {
 
     private Boolean completed = false;
 
+    private Integer priority = 1;
+
     @ManyToMany
     @JoinTable(name = "employee_tasks",
             joinColumns = @JoinColumn(name = "task_uuid"),
