@@ -1,6 +1,5 @@
 package com.vladislav.rest.controllers;
 
-import com.vladislav.rest.controllers.responses.PageDto;
 import com.vladislav.rest.models.Employee;
 import com.vladislav.rest.models.Task;
 import com.vladislav.rest.services.TaskService;
@@ -8,14 +7,19 @@ import com.vladislav.rest.utils.BeanUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -30,17 +34,18 @@ public class TaskController {
 
     private final TaskService service;
     private final RepresentationModelAssembler<Task, EntityModel<Task>> taskAssembler;
-    private final RepresentationModelAssembler<Page<Task>, EntityModel<PageDto<EntityModel<Task>>>> pageTaskAssembler;
     private final RepresentationModelAssembler<Employee, EntityModel<Employee>> employeeAssembler;
+    private final PagedResourcesAssembler<Task> pagedResourcesAssembler;
 
+    @Validated
     @GetMapping("/tasks")
-    public EntityModel<PageDto<EntityModel<Task>>> pageTasks(
-            @RequestParam(value = "page", defaultValue = "0", required = false) Integer page,
-            @RequestParam(value = "size", defaultValue = "250", required = false) Integer size
+    public PagedModel<EntityModel<Task>> pageTasks(
+            @RequestParam(value = "page", defaultValue = "0", required = false) @Min(0) Integer page,
+            @RequestParam(value = "size", defaultValue = "250", required = false) @Min(5) @Max(250) Integer size
     ) {
         final PageRequest pageRequest = PageRequest.of(page, size);
         final Page<Task> tasks = service.pageTasks(pageRequest);
-        return pageTaskAssembler.toModel(tasks);
+        return pagedResourcesAssembler.toModel(tasks, taskAssembler);
     }
 
     @GetMapping("/tasks/{uuid}")
