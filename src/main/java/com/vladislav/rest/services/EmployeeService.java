@@ -12,7 +12,7 @@ public interface EmployeeService {
 
     Optional<Employee> findById(Long id);
 
-    Employee save(Employee Employee);
+    Employee save(Employee employee);
 
     void delete(Long id);
 }
