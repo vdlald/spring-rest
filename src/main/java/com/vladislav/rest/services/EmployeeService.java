@@ -1,20 +1,18 @@
 package com.vladislav.rest.services;
 
 import com.vladislav.rest.models.Employee;
-import com.vladislav.rest.models.Task;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface EmployeeService {
-    Page<Employee> findAllEmployees(PageRequest pageRequest);
+    List<Employee> getAll();
 
-    Employee findEmployeeById(Long id);
+    Employee getById(Long id);
 
-    Employee saveEmployee(Employee Employee);
+    Optional<Employee> findById(Long id);
 
-    void deleteEmployee(Long id);
+    Employee save(Employee employee);
 
-    List<Task> getAllEmployeeTasks(Long id);
+    void delete(Long id);
 }

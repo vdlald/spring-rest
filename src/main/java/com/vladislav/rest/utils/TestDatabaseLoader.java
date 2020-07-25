@@ -12,6 +12,7 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -35,8 +36,11 @@ public class TestDatabaseLoader {
         Employee vladislav = new Employee().setFirstName("Vladislav").setLastName("Golubinov");
         vladislav = employeeRepository.save(vladislav);
 
-        Task task1 = new Task().setName("task1").setProject(demo).setEmployees(List.of(vladislav));
-        task1 = taskRepository.save(task1);
+        List<Task> tasks = new ArrayList<>();
+        for (int i = 0; i < 20; i++) {
+            tasks.add(new Task().setName("task" + (i + 1)).setProject(demo).setEmployees(List.of(vladislav)));
+        }
+        taskRepository.saveAll(tasks);
     }
 
 }

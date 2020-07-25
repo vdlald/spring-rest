@@ -1,6 +1,7 @@
 package com.vladislav.rest.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,8 +20,9 @@ import java.util.List;
 public class Employee {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "employee_id")
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
 
     @Size(min = 2, max = 20)
@@ -31,11 +33,16 @@ public class Employee {
     @Column(nullable = false)
     private String lastName;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "employee_tasks",
             joinColumns = @JoinColumn(name = "employee_id"),
             inverseJoinColumns = @JoinColumn(name = "task_uuid"))
     @JsonIgnore
     private List<Task> tasks;
+
+    @JsonProperty(value = "name", access = JsonProperty.Access.READ_ONLY)
+    public String getName() {
+        return firstName + " " + lastName;
+    }
 
 }

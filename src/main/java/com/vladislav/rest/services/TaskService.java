@@ -1,21 +1,28 @@
 package com.vladislav.rest.services;
 
-import com.vladislav.rest.models.Employee;
 import com.vladislav.rest.models.Task;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface TaskService {
-    Page<Task> findAllTasks(PageRequest pageRequest);
 
-    Task findTaskById(UUID taskUUID);
+    List<Task> getAll();
 
-    Task saveTask(Task task);
+    Page<Task> pageTasks(PageRequest pageRequest);
 
-    void deleteTask(UUID taskUUID);
+    Task getById(UUID taskUUID);
 
-    List<Employee> getAllTaskEmployees(UUID taskUUID);
+    Optional<Task> findById(UUID id);
+
+    Task save(Task task);
+
+    void delete(UUID taskUUID);
+
+    List<Task> getAllByCompleted(boolean completed);
+
+    void completeTask(Task task);
 }
