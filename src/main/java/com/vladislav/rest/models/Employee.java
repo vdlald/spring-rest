@@ -33,7 +33,7 @@ public class Employee {
     @Column(nullable = false)
     private String lastName;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "employee_tasks",
             joinColumns = @JoinColumn(name = "employee_id"),
             inverseJoinColumns = @JoinColumn(name = "task_uuid"))

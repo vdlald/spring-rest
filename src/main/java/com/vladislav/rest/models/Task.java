@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import javax.validation.constraints.Max;
@@ -41,14 +40,14 @@ public class Task {
     @Max(4)
     private Integer priority = 1;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "employee_tasks",
             joinColumns = @JoinColumn(name = "task_uuid"),
             inverseJoinColumns = @JoinColumn(name = "employee_id"))
     @JsonIgnore
     private List<Employee> employees;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id")
     @JsonIgnore
     private Project project;
