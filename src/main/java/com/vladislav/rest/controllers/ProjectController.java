@@ -1,6 +1,5 @@
 package com.vladislav.rest.controllers;
 
-import com.vladislav.rest.exceptions.ResourceNotFoundException;
 import com.vladislav.rest.models.Project;
 import com.vladislav.rest.models.Task;
 import com.vladislav.rest.services.ProjectService;
@@ -14,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -52,11 +52,12 @@ public class ProjectController {
     @ResponseStatus(HttpStatus.OK)
     public EntityModel<Project> putProject(@RequestBody Project incomingDto, @PathVariable Long id) {
         Project saved;
-        try {
-            final Project project = service.getById(id);
+        final Optional<Project> optionalProject = service.findById(id);
+        if (optionalProject.isPresent()) {
+            final Project project = optionalProject.get();
             BeanUtils.copyPropertiesExcludeNullProperties(incomingDto, project);
-            saved =  service.save(project);
-        } catch (ResourceNotFoundException ignore) {
+            saved = service.save(project);
+        } else {
             saved = service.save(incomingDto);
         }
         return modelAssembler.toModel(saved);
@@ -70,6 +71,7 @@ public class ProjectController {
 
     @GetMapping("/projects/{id}/tasks")
     public List<Task> getProjectTasks(@PathVariable Long id) {
-        return service.getProjectTasks(id);
+        final Project project = service.getById(id);
+        return project.getTasks();
     }
 }

@@ -1,6 +1,5 @@
 package com.vladislav.rest.controllers;
 
-import com.vladislav.rest.exceptions.ResourceNotFoundException;
 import com.vladislav.rest.models.Employee;
 import com.vladislav.rest.models.Task;
 import com.vladislav.rest.services.EmployeeService;
@@ -14,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -52,11 +52,12 @@ public class EmployeeController {
     @ResponseStatus(HttpStatus.OK)
     public EntityModel<Employee> putEmployee(@RequestBody Employee incomingDto, @PathVariable Long id) {
         Employee saved;
-        try {
-            final Employee employee = service.getById(id);
+        final Optional<Employee> optionalEmployee = service.findById(id);
+        if (optionalEmployee.isPresent()) {
+            final Employee employee = optionalEmployee.get();
             BeanUtils.copyPropertiesExcludeNullProperties(incomingDto, employee);
             saved = service.save(employee);
-        } catch (ResourceNotFoundException ignore) {
+        } else {
             saved = service.save(incomingDto);
         }
         return modelAssembler.toModel(saved);
@@ -70,6 +71,7 @@ public class EmployeeController {
 
     @GetMapping("/employees/{id}/tasks")
     public List<Task> getEmployeeTasks(@PathVariable Long id) {
-        return service.getEmployeeTasks(id);
+        final Employee employee = service.getById(id);
+        return employee.getTasks();
     }
 }

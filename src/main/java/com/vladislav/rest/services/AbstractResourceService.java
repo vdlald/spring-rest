@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 abstract class AbstractResourceService<T, ID> {
@@ -19,6 +20,10 @@ abstract class AbstractResourceService<T, ID> {
     public T getById(ID id) {
         return repository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Could not find " + clazz.getSimpleName() + " with id: " + id));
+    }
+
+    public Optional<T> findById(ID id) {
+        return repository.findById(id);
     }
 
     public T save(T object) {
