@@ -20,8 +20,9 @@ import java.util.List;
 public class Employee {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "employee_id")
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
 
     @Size(min = 2, max = 20)

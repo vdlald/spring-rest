@@ -9,6 +9,8 @@ import lombok.experimental.Accessors;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
 import java.util.List;
 import java.util.UUID;
@@ -35,6 +37,8 @@ public class Task {
 
     private Boolean completed = false;
 
+    @Min(1)
+    @Max(4)
     private Integer priority = 1;
 
     @ManyToMany
