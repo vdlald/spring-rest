@@ -24,12 +24,13 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class ProjectController {
 
     private final ProjectService service;
-    private final RepresentationModelAssembler<Project, EntityModel<Project>> modelAssembler;
+    private final RepresentationModelAssembler<Project, EntityModel<Project>> projectAssembler;
+    private final RepresentationModelAssembler<Task, EntityModel<Task>> taskAssembler;
 
     @GetMapping("/projects")
     public CollectionModel<EntityModel<Project>> getAllProjects() {
         final List<EntityModel<Project>> projects = service.getAll().stream()
-                .map(modelAssembler::toModel)
+                .map(projectAssembler::toModel)
                 .collect(Collectors.toUnmodifiableList());
         final Link selfRel = linkTo(methodOn(ProjectController.class).getAllProjects()).withSelfRel();
         return CollectionModel.of(projects, selfRel);
@@ -38,14 +39,14 @@ public class ProjectController {
     @GetMapping("/projects/{id}")
     public EntityModel<Project> getProjectById(@PathVariable Long id) {
         final Project project = service.getById(id);
-        return modelAssembler.toModel(project);
+        return projectAssembler.toModel(project);
     }
 
     @PostMapping("/projects")
     @ResponseStatus(HttpStatus.CREATED)
     public EntityModel<Project> createProject(@RequestBody Project incomingProject) {
         final Project project = service.save(incomingProject);
-        return modelAssembler.toModel(project);
+        return projectAssembler.toModel(project);
     }
 
     @PutMapping("/projects/{id}")
@@ -60,7 +61,7 @@ public class ProjectController {
         } else {
             saved = service.save(incomingDto);
         }
-        return modelAssembler.toModel(saved);
+        return projectAssembler.toModel(saved);
     }
 
     @DeleteMapping("/projects/{id}")
@@ -70,8 +71,12 @@ public class ProjectController {
     }
 
     @GetMapping("/projects/{id}/tasks")
-    public List<Task> getProjectTasks(@PathVariable Long id) {
+    public CollectionModel<EntityModel<Task>> getProjectTasks(@PathVariable Long id) {
         final Project project = service.getById(id);
-        return project.getTasks();
+        final Link selfRel = linkTo(methodOn(ProjectController.class).getProjectTasks(id)).withSelfRel();
+        final List<EntityModel<Task>> tasks = project.getTasks().stream()
+                .map(taskAssembler::toModel)
+                .collect(Collectors.toUnmodifiableList());
+        return CollectionModel.of(tasks, selfRel);
     }
 }

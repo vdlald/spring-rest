@@ -16,8 +16,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -29,6 +31,7 @@ public class TaskController {
     private final TaskService service;
     private final RepresentationModelAssembler<Task, EntityModel<Task>> taskAssembler;
     private final RepresentationModelAssembler<Page<Task>, EntityModel<PageDto<EntityModel<Task>>>> pageTaskAssembler;
+    private final RepresentationModelAssembler<Employee, EntityModel<Employee>> employeeAssembler;
 
     @GetMapping("/tasks")
     public EntityModel<PageDto<EntityModel<Task>>> pageTasks(
@@ -75,10 +78,13 @@ public class TaskController {
     }
 
     @GetMapping("/tasks/{uuid}/employees")
-    public CollectionModel<Employee> getTaskEmployees(@PathVariable UUID uuid) {
+    public CollectionModel<EntityModel<Employee>> getTaskEmployees(@PathVariable UUID uuid) {
         final Task task = service.getById(uuid);
         final Link selfRel = linkTo(methodOn(TaskController.class).getTaskEmployees(uuid)).withSelfRel();
-        return CollectionModel.of(task.getEmployees(), selfRel);
+        final List<EntityModel<Employee>> employees = task.getEmployees().stream()
+                .map(employeeAssembler::toModel)
+                .collect(Collectors.toUnmodifiableList());
+        return CollectionModel.of(employees, selfRel);
     }
 
     @GetMapping("/tasks/{uuid}/complete")

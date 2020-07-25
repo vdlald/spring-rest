@@ -24,12 +24,13 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class EmployeeController {
 
     private final EmployeeService service;
-    private final RepresentationModelAssembler<Employee, EntityModel<Employee>> modelAssembler;
+    private final RepresentationModelAssembler<Employee, EntityModel<Employee>> employeeAssembler;
+    private final RepresentationModelAssembler<Task, EntityModel<Task>> taskAssembler;
 
     @GetMapping("/employees")
     public CollectionModel<EntityModel<Employee>> getAllEmployees() {
         final List<EntityModel<Employee>> employees = service.getAll().stream()
-                .map(modelAssembler::toModel)
+                .map(employeeAssembler::toModel)
                 .collect(Collectors.toUnmodifiableList());
         final Link selfRel = linkTo(methodOn(EmployeeController.class).getAllEmployees()).withSelfRel();
         return CollectionModel.of(employees, selfRel);
@@ -38,14 +39,14 @@ public class EmployeeController {
     @GetMapping("/employees/{id}")
     public EntityModel<Employee> getEmployeeById(@PathVariable Long id) {
         final Employee employee = service.getById(id);
-        return modelAssembler.toModel(employee);
+        return employeeAssembler.toModel(employee);
     }
 
     @PostMapping("/employees")
     @ResponseStatus(HttpStatus.CREATED)
     public EntityModel<Employee> createEmployee(@RequestBody Employee incomingEmployee) {
         final Employee employee = service.save(incomingEmployee);
-        return modelAssembler.toModel(employee);
+        return employeeAssembler.toModel(employee);
     }
 
     @PutMapping("/employees/{id}")
@@ -60,7 +61,7 @@ public class EmployeeController {
         } else {
             saved = service.save(incomingDto);
         }
-        return modelAssembler.toModel(saved);
+        return employeeAssembler.toModel(saved);
     }
 
     @DeleteMapping("/employees/{id}")
@@ -70,8 +71,12 @@ public class EmployeeController {
     }
 
     @GetMapping("/employees/{id}/tasks")
-    public List<Task> getEmployeeTasks(@PathVariable Long id) {
+    public CollectionModel<EntityModel<Task>> getEmployeeTasks(@PathVariable Long id) {
         final Employee employee = service.getById(id);
-        return employee.getTasks();
+        final Link selfRel = linkTo(methodOn(EmployeeController.class).getEmployeeTasks(id)).withSelfRel();
+        final List<EntityModel<Task>> tasks = employee.getTasks().stream()
+                .map(taskAssembler::toModel)
+                .collect(Collectors.toUnmodifiableList());
+        return CollectionModel.of(tasks, selfRel);
     }
 }
